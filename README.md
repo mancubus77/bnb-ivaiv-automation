@@ -10,4 +10,6 @@ make run
 
 ## RUN Ansible
 
+```bash
 ansible-playbook -i hosts pb.main.yml -e "@extra_vars.yml"
+```
