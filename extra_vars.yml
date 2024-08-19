@@ -1,0 +1,6 @@
+base_url: "<BASE URL AND BASE API PATH>"
+tma_base_path: "<PATH WITH TmaApplication.exe>"
+tma_campaign_path: "<PATH WITH TEST CAMPAIGNS>"
+tma_campaign: "<TEST CAMPAIGN FILE>"
+rx_failed: "<regexp to determine failed test>"
+rx_success: "<regexp to determine success test>"
