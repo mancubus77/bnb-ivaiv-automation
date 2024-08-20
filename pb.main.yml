@@ -18,28 +18,29 @@
         instance_id: "{{ response_instance.content }}"
       when: response_instance.status == 200
 
-    - name: Create TMA Instance
-      ansible.builtin.uri:
-        url: "{{ base_url }}/tmas"
-        method: POST
-        status_code: [200]
-        return_content: true
-        headers:
-          Content-Type: application/json
-        body_format: json
-        body:
-          TMA_TYPE: 1
-          TMA_PATH: "{{ tma_base_path }}"
-          MCI_PORT: 5003
-          ACI_PORT: 5030
-          ENABLE_RCE: 0
-      register: response_instance
-      when: response_instance.status != 200
+    - name: Create new TMA instance
+      when: instance_id is not defined
+      block:
+        - name: Create TMA Instance
+          ansible.builtin.uri:
+            url: "{{ base_url }}/tmas"
+            method: POST
+            status_code: [201]
+            return_content: true
+            headers:
+              Content-Type: application/json
+            body_format: json
+            body:
+              TMA_TYPE: 1
+              TMA_PATH: "{{ tma_base_path }}"
+              MCI_PORT: 5003
+              ACI_PORT: 5030
+              ENABLE_RCE: 0
+          register: response_instance
 
-    - name: Set System ID
-      ansible.builtin.set_fact:
-        instance_id: "{{ response_instance.content }}"
-      when: response_instance.status == 200
+        - name: Set System ID
+          ansible.builtin.set_fact:
+            instance_id: "{{ response_instance.content }}"
 
     - name: Schedule Test
       ansible.builtin.uri:
@@ -59,7 +60,7 @@
 
     - name: Set Test ID
       ansible.builtin.set_fact:
-        test_id: "{{ response_schedule.content }}"
+        test_id: "{{ response_schedule.content | trim }}"
 
     - name: Run test campaign
       ansible.builtin.uri:
@@ -93,3 +94,29 @@
           "Failed"
           "{{  response_campaign_run.content }}"
       when: response_campaign_run.content | regex_search(rx_failed)
+
+    - name: Generate test report
+      ansible.builtin.uri:
+        url: "{{ base_url }}/tmas/{{ instance_id }}/campaigns/actions/generatereport"
+        method: POST
+        status_code: [202]
+        return_content: true
+        headers:
+          Content-Type: application/json
+        body_format: json
+        body:
+          CAMPAIGN_NAME: "{{ test_id }}"
+      register: response_report
+
+    - name: Ensure Report is ready
+      ansible.builtin.uri:
+        url: "{{ base_url }}/tmas/{{ instance_id }}/campaigns/actions/generatereport"
+        method: GET
+        status_code: [200, 404]
+        return_content: true
+        headers:
+          Content-Type: application/json
+      register: response_campaign_report
+      until: response_campaign_report.content | regex_search(rx_report)
+      retries: 120 # 600 sec = 10 Min (120 * 5)
+      delay: 5 # Every 5 seconds
