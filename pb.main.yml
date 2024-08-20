@@ -125,7 +125,7 @@
       ansible.builtin.set_fact:
         report_path: "{{ response_campaign_report.content | regex_findall(rx_path, '\\1') | default([]) }}"
       vars:
-        rx_path: 'AUTOMATION_REPORTComplete".+""(.+)"(\S+)'
+        rx_path: '(C:\\.+)"\s+?(\S+)'
 
     - name: Print report location
       ansible.builtin.debug:
