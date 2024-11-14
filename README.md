@@ -1,10 +1,10 @@
 # Description
 
-Ansible playbook to interact with TM500 and E500 Test Mobile RESTful TMA Controller (RTC)
+Ansible playbook to interact with TM500 and E500 Test Mobile RESTful TMA Controller (RTC). Playbook accepts a list of campaigns to run and execute them sequentially.
 
 ## Prepare variables
 
-Copy `extra_vars.yml` to `localvars.yml` via `cp extra_vars.yml localvars.yml` and populate the variables
+Copy `extra_vars.yml` to `localvars.yml` via `cp extra_vars.yml localvars.yml` and populate the variables.
 
 ## RUN Makefile
 
