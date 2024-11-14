@@ -2,10 +2,13 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  vars:
+    # Read default value, or value from AAP Survey
+    tma_campaigns_list: >-
+      {{ tma_campaigns_survey | default(tma_campaigns) }}
   tasks:
-
     - name: Iterrate campagines and include task
-      loop: "{{ tma_campaigns }}"
+      loop: "{{ tma_campaigns_list.split('\n') }}"
       ansible.builtin.include_tasks:
         file: tasks/run_campaign.yaml
       loop_control:

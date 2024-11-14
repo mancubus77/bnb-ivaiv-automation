@@ -1,10 +1,11 @@
 base_url: "<BASE URL AND BASE API PATH>"
 tma_base_path: "<PATH WITH TmaApplication.exe>"
 tma_campaign_path: "<PATH WITH TEST CAMPAIGNS>"
-tma_campaigns: 
-  - "<TEST CAMPAIGN FILE>"
-  - "<TEST CAMPAIGN FILE>"
-  - "<TEST CAMPAIGN FILE>"
+tma_campaigns: |-
+  TEST CAMPAIGN FILE 100
+  TEST CAMPAIGN FILE 101
+  TEST CAMPAIGN FILE 102
+  TEST CAMPAIGN FILE 103
 rx_failed: "<regexp to determine failed test>"
 rx_success: "<regexp to determine success test>"
 rx_report: "<regexp that report is ready>"
